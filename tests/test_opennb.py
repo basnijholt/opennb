@@ -162,6 +162,6 @@ def test_main_with_output_dir(tmp_path: Path) -> None:
         main()
         mock_open.assert_called_once_with(
             "owner/repo/notebook.ipynb",
-            str(tmp_path),
+            tmp_path,  # Changed from str(tmp_path) to tmp_path
             [],
         )
