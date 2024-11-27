@@ -11,6 +11,14 @@ Very useful in conjunction with [`uv run`](https://docs.astral.sh/uv/guides/proj
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Arguments](#arguments)
+- [Examples](#examples)
+- [Features](#features)
+- [License](#license)
+- [Contributing](#contributing)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- toc-end -->
 
