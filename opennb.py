@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Download and open a Jupyter notebook from a URL or GitHub repository."""
 
+import json
 import subprocess
 import urllib.request
-import json
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -24,18 +24,18 @@ def _get_default_branch(owner: str, repo: str) -> str:
     """
     url = f"https://api.github.com/repos/{owner}/{repo}"
     try:
-        with urllib.request.urlopen(url) as response:
+        with urllib.request.urlopen(url) as response:  # noqa: S310
             data = json.loads(response.read())
             return data["default_branch"]
     except urllib.error.HTTPError as e:
-        if e.code == 404:
-            raise ValueError(f"Repository {owner}/{repo} not found") from e
+        if e.code == 404:  # noqa: PLR2004
+            msg = f"Repository {owner}/{repo} not found"
+            raise ValueError(msg) from e
         raise
 
 
 def _convert_github_path_to_raw_url(path: str) -> str:
-    """
-    Convert a GitHub repository path to a raw content URL.
+    """Convert a GitHub repository path to a raw content URL.
 
     Parameters
     ----------
@@ -50,6 +50,7 @@ def _convert_github_path_to_raw_url(path: str) -> str:
     Returns
     -------
     Raw content URL for the notebook
+
     """
     # First split on # to separate file path
     parts = path.split("#", 1)
@@ -65,8 +66,9 @@ def _convert_github_path_to_raw_url(path: str) -> str:
 
     # Parse owner/repository
     repo_parts = repo_info.strip("/").split("/")
-    if len(repo_parts) != 2:
-        raise ValueError("Repository path must be in format: owner/repository")
+    if len(repo_parts) != 2:  # noqa: PLR2004
+        msg = "Repository path must be in format: owner/repository"
+        raise ValueError(msg)
     owner, repo = repo_parts
 
     # If no branch specified, get the default branch
@@ -77,21 +79,24 @@ def _convert_github_path_to_raw_url(path: str) -> str:
     if file_path is None:
         # No # separator, so the file path must be in the branch part
         if "/" not in branch:
-            raise ValueError("No file path specified")
+            msg = "No file path specified"
+            raise ValueError(msg)
         # Last part of branch is actually the file path
         branch, file_path = branch.split("/", 1)
 
     if not file_path.endswith(".ipynb"):
-        raise ValueError("Path must end with .ipynb")
+        msg = "Path must end with .ipynb"
+        raise ValueError(msg)
 
     return f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
 
 
 def open_notebook_from_url(
-    url: str, output_dir: Path | None = None, jupyter_args: list[str] | None = None
+    url: str,
+    output_dir: Path | None = None,
+    jupyter_args: list[str] | None = None,
 ) -> None:
-    """
-    Download a Jupyter notebook from URL or GitHub repository and open it.
+    """Download a Jupyter notebook from URL or GitHub repository and open it.
 
     Parameters
     ----------
@@ -112,7 +117,8 @@ def open_notebook_from_url(
     # Parse the filename from the URL
     filename = Path(urlparse(url).path).name
     if not filename.endswith(".ipynb"):
-        raise ValueError("URL must point to a Jupyter notebook (.ipynb file)")
+        msg = "URL must point to a Jupyter notebook (.ipynb file)"
+        raise ValueError(msg)
 
     # Set output directory
     output_dir = output_dir or Path.cwd()
@@ -120,7 +126,7 @@ def open_notebook_from_url(
 
     # Download the notebook
     print(f"Downloading notebook from {url}")
-    urllib.request.urlretrieve(url, output_path)
+    urllib.request.urlretrieve(url, output_path)  # noqa: S310
 
     # Prepare jupyter notebook command
     cmd = ["jupyter", "notebook", str(output_path)]
@@ -137,7 +143,7 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Download and open a Jupyter notebook from URL or GitHub repository"
+        description="Download and open a Jupyter notebook from URL or GitHub repository",
     )
     parser.add_argument(
         "url",
@@ -149,9 +155,7 @@ def main() -> None:
             "  - https://example.com/notebook.ipynb"
         ),
     )
-    parser.add_argument(
-        "--output-dir", type=Path, help="Directory to save the notebook in"
-    )
+    parser.add_argument("--output-dir", type=Path, help="Directory to save the notebook in")
     parser.add_argument(
         "jupyter_args",
         nargs="*",
