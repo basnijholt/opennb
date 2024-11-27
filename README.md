@@ -36,20 +36,6 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 - 🚀 Pass-through of Jupyter notebook arguments
 - 📥 Integration with `uvx` for dependency management
 
-## Installation
-
-Install using pip:
-
-```bash
-pip install opennb
-```
-
-Or using [uv](https://github.com/astral-sh/uv):
-
-```bash
-uv pip install opennb
-```
-
 ## Usage
 
 Open a notebook from a GitHub repository:
@@ -71,6 +57,9 @@ Open directly from a URL:
 ```bash
 opennb https://example.com/notebook.ipynb
 ```
+
+> [!IMPORTANT]
+> `opennb` is especially useful when used with [`uvx`](https://docs.astral.sh/uv/guides/tools/).
 
 Use with `uvx` to install dependencies and open a notebook in one go:
 
@@ -110,6 +99,20 @@ Open with custom Jupyter settings:
 
 ```bash
 opennb owner/repo/notebook.ipynb --NotebookApp.token='my-token'
+```
+
+## Installation
+
+Install using pip:
+
+```bash
+pip install opennb
+```
+
+Or using [uv](https://github.com/astral-sh/uv):
+
+```bash
+uv pip install opennb
 ```
 
 ## License
