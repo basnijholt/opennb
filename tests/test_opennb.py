@@ -123,6 +123,7 @@ def test_open_notebook_from_url_with_args() -> None:
     with (
         patch("urllib.request.urlretrieve") as mock_retrieve,
         patch("subprocess.run") as mock_run,
+        patch("sys.executable", "/path/to/python"),  # Mock Python executable path
     ):
         url = "https://example.com/notebook.ipynb"
         jupyter_args = ["--port", "8888"]
@@ -130,7 +131,15 @@ def test_open_notebook_from_url_with_args() -> None:
 
         mock_retrieve.assert_called_once()
         mock_run.assert_called_once_with(
-            ["jupyter", "notebook", str(Path.cwd() / "notebook.ipynb"), "--port", "8888"],
+            [
+                "/path/to/python",
+                "-m",
+                "jupyter",
+                "notebook",
+                str(Path.cwd() / "notebook.ipynb"),
+                "--port",
+                "8888",
+            ],
             check=True,
         )
 
