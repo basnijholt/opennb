@@ -42,10 +42,12 @@ uv pip install opennb
 Open a notebook from a GitHub repository:
 
 ```bash
-opennb owner/repo#path/to/notebook.ipynb
+opennb owner/repo/path/to/notebook.ipynb
 ```
 
-Specify a branch:
+This defaults to the default branch of the repository.
+
+Or specify a specific branch:
 
 ```bash
 opennb owner/repo@branch#path/to/notebook.ipynb
@@ -60,7 +62,7 @@ opennb https://example.com/notebook.ipynb
 Use with `uv run` to install dependencies and open a notebook in one go:
 
 ```bash
-uv run --with owner/repo opennb owner/repo#path/to/notebook.ipynb
+uv run --with owner/repo opennb owner/repo/path/to/notebook.ipynb
 ```
 
 For example, to open a notebook from the `pipefunc` repository and ensure its dependencies are installed:
@@ -74,7 +76,7 @@ uv run --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb
 All arguments after the notebook specification are passed directly to `jupyter notebook`:
 
 ```bash
-opennb owner/repo#notebook.ipynb --port 8888 --no-browser
+opennb owner/repo/notebook.ipynb --port 8888 --no-browser
 ```
 
 ## Examples
@@ -82,19 +84,19 @@ opennb owner/repo#notebook.ipynb --port 8888 --no-browser
 Open a notebook from the main branch:
 
 ```bash
-opennb scipy/scipy#doc/source/tutorial/basic.ipynb
+opennb owner/repo/notebook.ipynb
 ```
 
 Open from a specific branch:
 
 ```bash
-opennb pandas-dev/pandas@main#doc/source/getting_started/intro_tutorials/01_table_oriented.ipynb
+opennb jupyter/notebook@main#docs/source/examples/Notebook/Notebook%20Basics.ipynb
 ```
 
 Open with custom Jupyter settings:
 
 ```bash
-opennb owner/repo#notebook.ipynb --NotebookApp.token='my-token'
+opennb owner/repo/notebook.ipynb --NotebookApp.token='my-token'
 ```
 
 ## Features
