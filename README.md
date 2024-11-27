@@ -17,10 +17,10 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Features](#features)
-- [Installation](#installation)
 - [Usage](#usage)
   - [Arguments](#arguments)
 - [Examples](#examples)
+- [Installation](#installation)
 - [License](#license)
 - [Contributing](#contributing)
 
