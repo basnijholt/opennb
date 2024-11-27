@@ -3,6 +3,7 @@
 
 import json
 import subprocess
+import sys
 import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
@@ -119,7 +120,8 @@ def open_notebook_from_url(
     urllib.request.urlretrieve(url, output_path)  # noqa: S310
 
     # Prepare jupyter notebook command
-    cmd = ["jupyter", "notebook", str(output_path)]
+    cmd = [sys.executable, "-m", "jupyter", "notebook", str(output_path)]
+
     if jupyter_args:
         cmd.extend(jupyter_args)
 
