@@ -2,6 +2,8 @@
 
 [![PyPI](https://img.shields.io/pypi/v/opennb)](https://pypi.org/project/opennb/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/opennb)](https://pypi.org/project/opennb/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![pytest](https://github.com/basnijholt/opennb/actions/workflows/pytest-uv.yml/badge.svg)](https://github.com/basnijholt/opennb/actions/workflows/pytest-uv.yml)
 
 📓 Open Jupyter notebooks from GitHub repositories or URLs directly in Jupyter.
 Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools/#tools).
