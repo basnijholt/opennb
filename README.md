@@ -43,13 +43,13 @@ opennb https://example.com/notebook.ipynb
 Use with `uv run` to install dependencies and open a notebook in one go:
 
 ```bash
-uv run --from owner/repo opennb owner/repo#path/to/notebook.ipynb
+uv run --with owner/repo opennb owner/repo#path/to/notebook.ipynb
 ```
 
 For example, to open a notebook from the `pipefunc` repository and ensure its dependencies are installed:
 
 ```bash
-uv run --from pipefunc --from notebook opennb pipefunc/pipefunc/example.ipynb
+uv run --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb
 ```
 
 ### Arguments
