@@ -42,47 +42,37 @@ def _convert_github_path_to_raw_url(path: str) -> str:
     path
         GitHub repository path in one of these formats:
         - owner/repository/path/to/notebook.ipynb (uses default branch)
-        - owner/repository@branch/name#path/to/notebook.ipynb
-
-        Both branch names and file paths can contain slashes.
-        The notebook path must end with .ipynb.
+        - owner/repository@branch#path/to/notebook.ipynb
 
     Returns
     -------
     Raw content URL for the notebook
 
     """
-    # First split on # to separate file path
-    parts = path.split("#", 1)
-    repo_part = parts[0]
-    file_path = parts[1] if len(parts) > 1 else None
-
-    # Then handle repository and branch
-    if "@" in repo_part:
-        repo_info, branch = repo_part.split("@", 1)
-    else:
-        repo_info = repo_part
-        branch = None  # Will be set to default branch later
-
-    # Parse owner/repository
-    repo_parts = repo_info.strip("/").split("/")
-    if len(repo_parts) != 2:  # noqa: PLR2004
-        msg = "Repository path must be in format: owner/repository"
-        raise ValueError(msg)
-    owner, repo = repo_parts
-
-    # If no branch specified, get the default branch
-    if branch is None:
-        branch = _get_default_branch(owner, repo)
-
-    # Handle file path
-    if file_path is None:
-        # No # separator, so the file path must be in the branch part
-        if "/" not in branch:
-            msg = "No file path specified"
+    if "@" in path:
+        # Handle owner/repo@branch#path format
+        repo_part, rest = path.split("@", 1)
+        if "#" not in rest:
+            msg = (
+                "When using @branch, the path must be specified after # "
+                "(e.g., owner/repo@branch#path/to/notebook.ipynb)"
+            )
             raise ValueError(msg)
-        # Last part of branch is actually the file path
-        branch, file_path = branch.split("/", 1)
+        branch, file_path = rest.split("#", 1)
+        repo_parts = repo_part.strip("/").split("/")
+        if len(repo_parts) != 2:  # noqa: PLR2004
+            msg = "Repository path must be in format: owner/repository"
+            raise ValueError(msg)
+        owner, repo = repo_parts
+    else:
+        # Handle owner/repo/path format
+        parts = path.strip("/").split("/")
+        if len(parts) < 3:  # noqa: PLR2004
+            msg = "Path must be in format: owner/repository/path/to/notebook.ipynb"
+            raise ValueError(msg)
+        owner, repo = parts[:2]
+        file_path = "/".join(parts[2:])
+        branch = _get_default_branch(owner, repo)
 
     if not file_path.endswith(".ipynb"):
         msg = "Path must end with .ipynb"
