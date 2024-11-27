@@ -6,6 +6,15 @@
 📓 Open Jupyter notebooks from GitHub repositories or URLs directly in Jupyter.
 Very useful in conjunction with [`uv run`](https://docs.astral.sh/uv/guides/projects/#running-commands).
 
+<!-- toc-start -->
+## :books: Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- toc-end -->
+
+
 ## Installation
 
 Install using pip:
