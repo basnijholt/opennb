@@ -13,8 +13,6 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 
 <details>
 <summary>ToC</summary>
-<!-- toc-start -->
-## :books: Table of Contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
@@ -27,8 +25,6 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 - [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-<!-- toc-end -->
-
 </details>
 
 ## Features
