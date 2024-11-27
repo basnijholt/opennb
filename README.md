@@ -4,7 +4,10 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/opennb)](https://pypi.org/project/opennb/)
 
 📓 Open Jupyter notebooks from GitHub repositories or URLs directly in Jupyter.
-Very useful in conjunction with [`uv run`](https://docs.astral.sh/uv/guides/projects/#running-commands).
+Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools/#tools).
+
+> [!TIP]
+> Try `uvx --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb` to open a notebook from the [`pipefunc`](https://github.com/pipefunc/pipefunc) repository and ensure its dependencies are installed.
 
 <!-- toc-start -->
 ## :books: Table of Contents
@@ -59,16 +62,16 @@ Open directly from a URL:
 opennb https://example.com/notebook.ipynb
 ```
 
-Use with `uv run` to install dependencies and open a notebook in one go:
+Use with `uvx` to install dependencies and open a notebook in one go:
 
 ```bash
-uv run --with owner/repo opennb owner/repo/path/to/notebook.ipynb
+uvx --with dependency opennb owner/repo/path/to/notebook.ipynb
 ```
 
 For example, to open a notebook from the `pipefunc` repository and ensure its dependencies are installed:
 
 ```bash
-uv run --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb
+uvx --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb
 ```
 
 ### Arguments
@@ -106,7 +109,7 @@ opennb owner/repo/notebook.ipynb --NotebookApp.token='my-token'
 - 🌳 Support for specific branches
 - 🔗 Direct URL support
 - 🚀 Pass-through of Jupyter notebook arguments
-- 📥 Integration with `uv run` for dependency management
+- 📥 Integration with `uvx` for dependency management
 
 ## License
 
