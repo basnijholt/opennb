@@ -11,6 +11,8 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 > [!TIP]
 > Try `uvx --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb` to open a notebook from the [`pipefunc`](https://github.com/pipefunc/pipefunc) repository and ensure its dependencies are installed.
 
+<details>
+<summary>ToC</summary>
 <!-- toc-start -->
 ## :books: Table of Contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -27,6 +29,16 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- toc-end -->
 
+</details>
+
+## Features
+
+- 📦 Open notebooks directly from GitHub repositories
+- 🔄 Automatic default branch detection
+- 🌳 Support for specific branches
+- 🔗 Direct URL support
+- 🚀 Pass-through of Jupyter notebook arguments
+- 📥 Integration with `uvx` for dependency management
 
 ## Installation
 
@@ -103,15 +115,6 @@ Open with custom Jupyter settings:
 ```bash
 opennb owner/repo/notebook.ipynb --NotebookApp.token='my-token'
 ```
-
-## Features
-
-- 📦 Open notebooks directly from GitHub repositories
-- 🔄 Automatic default branch detection
-- 🌳 Support for specific branches
-- 🔗 Direct URL support
-- 🚀 Pass-through of Jupyter notebook arguments
-- 📥 Integration with `uvx` for dependency management
 
 ## License
 
