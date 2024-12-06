@@ -6,8 +6,8 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: mixed-line-ending
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.270"
+  - repo: https://https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.8.2"
     hooks:
       - id: ruff
         args: ["--fix"]
