@@ -191,6 +191,7 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(
         description="Download and open a Jupyter notebook from URL or GitHub repository",
+        formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "url",
