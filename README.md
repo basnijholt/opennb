@@ -112,6 +112,7 @@ opennb owner/repo/notebook.ipynb --NotebookApp.token='my-token'
 - 🔗 Direct URL support
 - 🚀 Pass-through of Jupyter notebook arguments
 - 📥 Integration with `uvx` for dependency management
+- 👽 Also works with Jupytext `.md` or `.py` notebooks
 
 ## License
 
