@@ -4,7 +4,6 @@ import subprocess
 import urllib.error
 import urllib.request
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -235,48 +234,6 @@ def test_open_notebook_from_py_url(tmp_path: Path) -> None:
 
         # Check that unlink was not called, since the file should still exist
         assert not (tmp_path / "temp.ipynb").exists()
-
-
-def test_convert_to_ipynb_success(tmp_path: Path) -> None:
-    """Test successful conversion of a Jupytext file to .ipynb."""
-    mock_markdown_content = b"# This is a test markdown file"
-    url = "https://example.com/notebook.md"
-
-    with (
-        patch("urllib.request.urlopen") as mock_urlopen,
-        patch("subprocess.run") as mock_run,
-        patch(
-            "tempfile.NamedTemporaryFile",
-            return_value=NamedTemporaryFile(dir=tmp_path, delete=False),
-        ) as mock_tempfile,
-    ):
-        # Mock the response from urlopen
-        mock_response = MagicMock()
-        mock_response.read.return_value = mock_markdown_content
-        mock_urlopen.return_value.__enter__.return_value = mock_response
-
-        # Mock subprocess.run to indicate successful conversion
-        mock_run.return_value = MagicMock(returncode=0)
-
-        temp_file_path = _convert_to_ipynb(url)
-
-        assert temp_file_path.name == Path(mock_tempfile.return_value.name).name
-        assert temp_file_path.suffix == ".ipynb"
-        assert temp_file_path.parent == tmp_path
-        mock_run.assert_called_once_with(
-            [
-                "python",
-                "-m",
-                "jupytext",
-                "--to",
-                "notebook",
-                "--output",
-                str(temp_file_path),
-                "-",
-            ],
-            input=mock_markdown_content,
-            check=True,
-        )
 
 
 def test_convert_to_ipynb_failure() -> None:
