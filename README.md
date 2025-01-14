@@ -35,6 +35,7 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 - 🔗 Direct URL support
 - 🚀 Pass-through of Jupyter notebook arguments
 - 📥 Integration with `uvx` for dependency management
+- 👽 Also works with Jupytext `.md` or `.py` notebooks
 
 ## Usage
 
