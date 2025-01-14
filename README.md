@@ -11,36 +11,31 @@ Very useful in conjunction with [`uvx`](https://docs.astral.sh/uv/concepts/tools
 > [!TIP]
 > Try `uvx --with "pipefunc[docs]" opennb pipefunc/pipefunc/example.ipynb` to open a notebook from the [`pipefunc`](https://github.com/pipefunc/pipefunc) repository and ensure its dependencies are installed.
 
-<!-- toc-start -->
-## :books: Table of Contents
+<details>
+<summary>ToC</summary>
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Installation](#installation)
+- [Features](#features)
 - [Usage](#usage)
   - [Arguments](#arguments)
 - [Examples](#examples)
-- [Features](#features)
+- [Installation](#installation)
 - [License](#license)
 - [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-<!-- toc-end -->
+</details>
 
+## Features
 
-## Installation
-
-Install using pip:
-
-```bash
-pip install opennb
-```
-
-Or using [uv](https://github.com/astral-sh/uv):
-
-```bash
-uv pip install opennb
-```
+- 📦 Open notebooks directly from GitHub repositories
+- 🔄 Automatic default branch detection
+- 🌳 Support for specific branches
+- 🔗 Direct URL support
+- 🚀 Pass-through of Jupyter notebook arguments
+- 📥 Integration with `uvx` for dependency management
+- 👽 Also works with Jupytext `.md` or `.py` notebooks
 
 ## Usage
 
@@ -63,6 +58,9 @@ Open directly from a URL:
 ```bash
 opennb https://example.com/notebook.ipynb
 ```
+
+> [!IMPORTANT]
+> `opennb` is especially useful when used with [`uvx`](https://docs.astral.sh/uv/guides/tools/).
 
 Use with `uvx` to install dependencies and open a notebook in one go:
 
@@ -104,15 +102,19 @@ Open with custom Jupyter settings:
 opennb owner/repo/notebook.ipynb --NotebookApp.token='my-token'
 ```
 
-## Features
+## Installation
 
-- 📦 Open notebooks directly from GitHub repositories
-- 🔄 Automatic default branch detection
-- 🌳 Support for specific branches
-- 🔗 Direct URL support
-- 🚀 Pass-through of Jupyter notebook arguments
-- 📥 Integration with `uvx` for dependency management
-- 👽 Also works with Jupytext `.md` or `.py` notebooks
+Install using pip:
+
+```bash
+pip install opennb
+```
+
+Or using [uv](https://github.com/astral-sh/uv):
+
+```bash
+uv pip install opennb
+```
 
 ## License
 

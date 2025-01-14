@@ -23,6 +23,7 @@ def _get_default_branch(owner: str, repo: str) -> str:
     Returns
     -------
     Default branch name
+
     """
     url = f"https://api.github.com/repos/{owner}/{repo}"
     try:
@@ -101,6 +102,7 @@ def open_notebook_from_url(
         Directory to save the notebook in. If None, uses current directory
     jupyter_args
         Additional arguments to pass to jupyter notebook command
+
     """
     # Check if it's a GitHub repository path
     if not url.startswith(("http://", "https://")):
@@ -152,6 +154,7 @@ def _convert_to_ipynb(url: str) -> Path:
     -------
     Path
         Path to the temporary ipynb file.
+
     """
     print(f"Converting Jupytext from {url} to Jupyter notebook")
     with urllib.request.urlopen(url) as response:  # noqa: S310
