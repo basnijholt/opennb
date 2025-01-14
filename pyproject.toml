@@ -8,6 +8,7 @@ description = "Open Jupyter notebooks from GitHub repositories or URLs directly 
 version = "0.2.2"
 authors = [{ name = "Bas Nijholt", email = "bas@nijho.lt" }]
 dependencies = [
+    "jupytext>=1.16.6",
     "notebook",
 ]
 requires-python = ">=3.10"

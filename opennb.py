@@ -6,6 +6,7 @@ import subprocess
 import sys
 import urllib.request
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 
 
@@ -75,8 +76,8 @@ def _convert_github_path_to_raw_url(path: str) -> str:
         file_path = "/".join(parts[2:])
         branch = _get_default_branch(owner, repo)
 
-    if not file_path.endswith(".ipynb"):
-        msg = "Path must end with .ipynb"
+    if not file_path.endswith((".ipynb", ".md", ".py")):
+        msg = "Path must end with .ipynb, .md, or .py"
         raise ValueError(msg)
 
     return f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
@@ -106,18 +107,23 @@ def open_notebook_from_url(
         url = _convert_github_path_to_raw_url(url)
 
     # Parse the filename from the URL
-    filename = Path(urlparse(url).path).name
-    if not filename.endswith(".ipynb"):
-        msg = "URL must point to a Jupyter notebook (.ipynb file)"
+    parsed_url = urlparse(url)
+    filename = Path(parsed_url.path).name
+
+    # Check if the file is a markdown file
+    if filename.endswith((".md", ".py")):
+        output_path = _convert_to_ipynb(url)
+    elif filename.endswith(".ipynb"):
+        # Set output directory
+        output_dir = output_dir or Path.cwd()
+        output_path = output_dir / filename
+
+        # Download the notebook
+        print(f"Downloading notebook from {url}")
+        urllib.request.urlretrieve(url, output_path)  # noqa: S310
+    else:
+        msg = "URL must point to a Jupyter notebook (.ipynb file) or a Jupytext markdown file (.md) or (.py)"  # noqa: E501
         raise ValueError(msg)
-
-    # Set output directory
-    output_dir = output_dir or Path.cwd()
-    output_path = output_dir / filename
-
-    # Download the notebook
-    print(f"Downloading notebook from {url}")
-    urllib.request.urlretrieve(url, output_path)  # noqa: S310
 
     # Prepare jupyter notebook command
     cmd = [sys.executable, "-m", "jupyter", "notebook", str(output_path)]
@@ -127,7 +133,56 @@ def open_notebook_from_url(
 
     # Open the notebook
     print(f"Opening notebook {output_path}")
-    subprocess.run(cmd, check=True)  # noqa: S603
+    try:
+        subprocess.run(cmd, check=True)  # noqa: S603
+    finally:
+        if filename.endswith((".md", ".py")):
+            output_path.unlink()
+
+
+def _convert_to_ipynb(url: str) -> Path:
+    """Convert a Jupytext notebook file from a URL to a temporary ipynb file.
+
+    Parameters
+    ----------
+    url
+        URL of the Juptyext markdown file to convert.
+
+    Returns
+    -------
+    Path
+        Path to the temporary ipynb file.
+    """
+    print(f"Converting Jupytext from {url} to Jupyter notebook")
+    with urllib.request.urlopen(url) as response:  # noqa: S310
+        markdown_content = response.read()
+
+    # Use a temporary file for the converted notebook
+    with NamedTemporaryFile(suffix=".ipynb", delete=False) as temp_file:
+        temp_file_path = Path(temp_file.name)
+        cmd = [
+            sys.executable,
+            "-m",
+            "jupytext",
+            "--to",
+            "notebook",
+            "--output",
+            str(temp_file_path),
+            "-",
+        ]
+        try:
+            subprocess.run(
+                cmd,  # noqa: S603
+                input=markdown_content,
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            temp_file_path.unlink()
+            msg = f"Failed to convert markdown to Jupyter notebook: {e}"
+            raise ValueError(msg) from e
+
+        print(f"Markdown file converted and saved to {temp_file_path}")
+        return temp_file_path
 
 
 def main() -> None:
