@@ -138,7 +138,7 @@ def open_notebook_from_url(
     try:
         subprocess.run(cmd, check=True)
     finally:
-        if filename.endswith((".md", ".py")):
+        if filename.endswith((".md", ".py")) and output_path.exists():
             output_path.unlink()
 
 
