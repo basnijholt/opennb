@@ -116,8 +116,8 @@ def open_notebook_from_url(
     if filename.endswith((".md", ".py")):
         output_path = _convert_to_ipynb(url)
     elif filename.endswith(".ipynb"):
-        # Set output directory
-        output_dir = output_dir or Path.cwd()
+        # Set output directory to a temporary directory if not specified
+        output_dir = output_dir or Path(NamedTemporaryFile(delete=False).name).parent  # noqa: SIM115
         output_path = output_dir / filename
 
         # Download the notebook
@@ -136,9 +136,9 @@ def open_notebook_from_url(
     # Open the notebook
     print(f"Opening notebook {output_path}")
     try:
-        subprocess.run(cmd, check=True)  # noqa: S603
+        subprocess.run(cmd, check=True)
     finally:
-        if filename.endswith((".md", ".py")):
+        if filename.endswith((".md", ".py")) and output_path.exists():
             output_path.unlink()
 
 
@@ -175,7 +175,7 @@ def _convert_to_ipynb(url: str) -> Path:
         ]
         try:
             subprocess.run(
-                cmd,  # noqa: S603
+                cmd,
                 input=markdown_content,
                 check=True,
             )

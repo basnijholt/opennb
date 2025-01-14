@@ -1,5 +1,6 @@
 """Tests for opennb."""
 
+import subprocess
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -9,6 +10,7 @@ import pytest
 
 from opennb import (
     _convert_github_path_to_raw_url,
+    _convert_to_ipynb,
     _get_default_branch,
     main,
     open_notebook_from_url,
@@ -118,7 +120,7 @@ def test_open_notebook_from_url() -> None:
         mock_run.assert_called_once()
 
 
-def test_open_notebook_from_url_with_args() -> None:
+def test_open_notebook_from_url_with_args(tmp_path: Path) -> None:
     """Test opening notebook with additional Jupyter arguments."""
     with (
         patch("urllib.request.urlretrieve") as mock_retrieve,
@@ -127,7 +129,7 @@ def test_open_notebook_from_url_with_args() -> None:
     ):
         url = "https://example.com/notebook.ipynb"
         jupyter_args = ["--port", "8888"]
-        open_notebook_from_url(url, jupyter_args=jupyter_args)
+        open_notebook_from_url(url, output_dir=tmp_path, jupyter_args=jupyter_args)
 
         mock_retrieve.assert_called_once()
         mock_run.assert_called_once_with(
@@ -136,7 +138,7 @@ def test_open_notebook_from_url_with_args() -> None:
                 "-m",
                 "jupyter",
                 "notebook",
-                str(Path.cwd() / "notebook.ipynb"),
+                str(tmp_path / "notebook.ipynb"),
                 "--port",
                 "8888",
             ],
@@ -174,3 +176,89 @@ def test_main_with_output_dir(tmp_path: Path) -> None:
             tmp_path,  # Changed from str(tmp_path) to tmp_path
             [],
         )
+
+
+def test_open_notebook_from_md_url(tmp_path: Path) -> None:
+    """Test opening a .md (Jupytext) file from a URL."""
+    mock_markdown_content = b"# This is a test markdown file"
+    url = "https://example.com/notebook.md"
+
+    with (
+        patch("urllib.request.urlopen") as mock_urlopen,
+        patch("subprocess.run") as mock_run,
+        patch("opennb._convert_to_ipynb", return_value=tmp_path / "temp.ipynb") as mock_convert,
+    ):
+        # Mock the response from urlopen for the markdown file
+        mock_response = MagicMock()
+        mock_response.read.return_value = mock_markdown_content
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        open_notebook_from_url(url)
+
+        # Assert that _convert_to_ipynb was called
+        mock_convert.assert_called_once_with(url)
+
+        # Assert that jupyter notebook was called to open the converted file
+        mock_run.assert_called_once()
+        args, _ = mock_run.call_args
+        assert args[0][4] == str(tmp_path / "temp.ipynb")
+
+        # Check that unlink was not called, since the file should still exist
+        assert not (tmp_path / "temp.ipynb").exists()
+
+
+def test_open_notebook_from_py_url(tmp_path: Path) -> None:
+    """Test opening a .py (Jupytext) file from a URL."""
+    mock_python_content = b'print("Hello from a test Python file")'
+    url = "https://example.com/notebook.py"
+
+    with (
+        patch("urllib.request.urlopen") as mock_urlopen,
+        patch("subprocess.run") as mock_run,
+        patch("opennb._convert_to_ipynb", return_value=tmp_path / "temp.ipynb") as mock_convert,
+    ):
+        # Mock the response from urlopen for the python file
+        mock_response = MagicMock()
+        mock_response.read.return_value = mock_python_content
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        open_notebook_from_url(url)
+
+        # Assert that _convert_to_ipynb was called
+        mock_convert.assert_called_once_with(url)
+
+        # Assert that jupyter notebook was called to open the converted file
+        mock_run.assert_called_once()
+        args, _ = mock_run.call_args
+        assert args[0][4] == str(tmp_path / "temp.ipynb")
+
+        # Check that unlink was not called, since the file should still exist
+        assert not (tmp_path / "temp.ipynb").exists()
+
+
+def test_convert_to_ipynb_failure() -> None:
+    """Test handling of Jupytext conversion failure."""
+    mock_markdown_content = b"# This is a test markdown file"
+    url = "https://example.com/notebook.md"
+
+    with (
+        patch("urllib.request.urlopen") as mock_urlopen,
+        patch("subprocess.run") as mock_run,
+        patch("tempfile.NamedTemporaryFile") as mock_tempfile,
+        patch("pathlib.Path.unlink") as mock_unlink,
+    ):
+        # Mock the response from urlopen
+        mock_response = MagicMock()
+        mock_response.read.return_value = mock_markdown_content
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+        # Mock the temporary file
+        mock_tempfile.return_value.__enter__.return_value.name = "temp.ipynb"
+
+        # Mock subprocess.run to simulate conversion error
+        mock_run.side_effect = subprocess.CalledProcessError(1, "cmd", "error")
+
+        with pytest.raises(ValueError, match="Failed to convert markdown to Jupyter notebook"):
+            _convert_to_ipynb(url)
+
+        mock_unlink.assert_called_once()
