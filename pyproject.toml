@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "opennb"
 description = "Open Jupyter notebooks from GitHub repositories or URLs directly in Jupyter."
-version = "0.3.0"
+version = "0.3.1"
 authors = [{ name = "Bas Nijholt", email = "bas@nijho.lt" }]
 dependencies = [
     "jupytext>=1.16.6",
@@ -35,6 +35,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
 ]
@@ -82,6 +83,8 @@ ignore = [
     "S101",    # Use of assert detected
     "D402",    # First line should not be the function's signature
     "D401",    # First line of docstring should be in imperative mood
+    "D203",    # One-blank-line-before-class (incompatible with D211)
+    "D213",    # Multi-line-summary-second-line (incompatible with D212)
     "S603",    # `subprocess` call: check for execution of untrusted input
 ]
 
