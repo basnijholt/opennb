@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Download and open a Jupyter notebook from a URL or GitHub repository."""
 
+import argparse
 import json
 import subprocess
 import sys
@@ -25,13 +26,13 @@ def _get_default_branch(owner: str, repo: str) -> str:
     Default branch name
 
     """
-    print(f"🔍 Getting default branch for {owner}/{repo}...")  # Added print statement
+    print(f"🔍 Getting default branch for {owner}/{repo}...")
     url = f"https://api.github.com/repos/{owner}/{repo}"
     try:
         with urllib.request.urlopen(url) as response:  # noqa: S310
             data = json.loads(response.read())
             default_branch = data["default_branch"]
-            print(f"✅ Default branch found: {default_branch}")  # Added print statement
+            print(f"✅ Default branch found: {default_branch}")
             return default_branch
     except urllib.error.HTTPError as e:
         if e.code == 404:  # noqa: PLR2004
@@ -55,7 +56,7 @@ def _convert_github_path_to_raw_url(path: str) -> str:
     Raw content URL for the notebook
 
     """
-    print(f"🔄 Converting GitHub path '{path}' to raw URL...")  # Added print statement
+    print(f"🔄 Converting GitHub path '{path}' to raw URL...")
     if "@" in path:
         # Handle owner/repo@branch#path format
         repo_part, rest = path.split("@", 1)
@@ -86,7 +87,7 @@ def _convert_github_path_to_raw_url(path: str) -> str:
         raise ValueError(msg)
 
     raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{file_path}"
-    print(f"✅ Raw URL: {raw_url}")  # Added print statement
+    print(f"✅ Raw URL: {raw_url}")
     return raw_url
 
 
@@ -103,14 +104,14 @@ def open_notebook_from_url(
         URL or GitHub path of the Jupyter notebook to download.
         For GitHub, use either format:
         - owner/repository/path/to/notebook.ipynb (uses default branch)
-        - owner/repository@branch/name#path/to/notebook.ipynb
+        - owner/repository@branch#path/to/notebook.ipynb
     output_dir
         Directory to save the notebook in. If None, uses current directory
     jupyter_args
         Additional arguments to pass to jupyter notebook command
 
     """
-    print(f"🚀 Starting to open notebook from: {url}")  # Added print statement
+    print(f"🚀 Starting to open notebook from: {url}")
     # Check if it's a GitHub repository path
     if not url.startswith(("http://", "https://")):
         url = _convert_github_path_to_raw_url(url)
@@ -132,7 +133,10 @@ def open_notebook_from_url(
         urllib.request.urlretrieve(url, output_path)  # noqa: S310
         print(f"✅ Downloaded to {output_path}")
     else:
-        msg = "❌ URL must point to a Jupyter notebook (.ipynb file) or a Jupytext markdown file (.md) or (.py)"  # noqa: E501
+        msg = (
+            "❌ URL must point to a Jupyter notebook (.ipynb file) "
+            "or a Jupytext markdown file (.md) or (.py)"
+        )
         raise ValueError(msg)
 
     # Prepare jupyter notebook command
@@ -157,7 +161,7 @@ def _convert_to_ipynb(url: str) -> Path:
     Parameters
     ----------
     url
-        URL of the Juptyext markdown file to convert.
+        URL of the Jupytext markdown file to convert.
 
     Returns
     -------
@@ -200,8 +204,6 @@ def _convert_to_ipynb(url: str) -> Path:
 
 def main() -> None:
     """Parse command line arguments and open the notebook."""
-    import argparse
-
     parser = argparse.ArgumentParser(
         description="Download and open a Jupyter notebook from URL or GitHub repository",
         formatter_class=argparse.RawTextHelpFormatter,
@@ -210,7 +212,6 @@ def main() -> None:
         "url",
         help=(
             "URL or GitHub path. Examples:\n"
-            "  - owner/repo#path/to/notebook.ipynb\n"
             "  - owner/repo@branch#path/to/notebook.ipynb\n"
             "  - owner/repo/path/to/notebook.ipynb\n"
             "  - https://example.com/notebook.ipynb"
@@ -229,11 +230,11 @@ def main() -> None:
     # Combine explicit jupyter_args with unknown args
     all_jupyter_args = args.jupyter_args + unknown
 
-    print(f"✨ Starting opennb with URL: {args.url}")  # Added print statement
+    print(f"✨ Starting opennb with URL: {args.url}")
 
     open_notebook_from_url(args.url, args.output_dir, all_jupyter_args)
 
-    print("🎉 Finished!")  # Added print statement
+    print("🎉 Finished!")
 
 
 if __name__ == "__main__":
